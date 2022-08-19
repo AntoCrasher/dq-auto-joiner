@@ -4,7 +4,7 @@ end
 wait(2)
 -- settings
 local alts = {
-    "AntohaAlt1",
+    "E",
     "AntohaAlt2",
     "AntohaAlt3",
     "AntohaAlt4",
