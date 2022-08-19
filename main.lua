@@ -1,45 +1,80 @@
+if not game:IsLoaded() then
+    game.Loaded:Wait()
+end
+wait(2)
 -- settings
-local masterUsername = ""
-
-local dungeonName = ""
-local difficulty = ""
-local private = false
-
--- services and stuff 
+local alts = {
+    "AntohaAlt1",
+    "AntohaAlt2",
+    "AntohaAlt3",
+    "AntohaAlt4",
+    "AntohaAlt5"
+}
+local masterUsername = "Anto_Crasher666"
+local dungeonName = "Orbital Outpost"
+local difficulty = "Nightmare"
+local autoStart = true
+-- services and stuff
 local playerService = game:GetService("Players")
 local lp = playerService.LocalPlayer
-
+local UserInputService = game:GetService("UserInputService")
 -- vars
 local isMaster = lp.Name == masterUsername
-
 -- Remote Events / Functions
+local loadGame = game.ReplicatedStorage.remotes.loadPlayerCharacter;
 local createLobbyRF = game.ReplicatedStorage.remotes.createLobby;
-local joinLobbyRF = game.ReplicatedStorage.remotes.joinDungeon;
-
-if (isMaster) then
-    return createLobby()
+local joinDungeonRF = game.ReplicatedStorage.remotes.joinDungeon;
+local startDungeonRF = game.ReplicatedStorage.remotes.startDungeon;
+-- Functions
+function createLobby()
+    createLobbyRF:InvokeServer(dungeonName, difficulty, 0, true, false, false);
 end
--- code if not master
-
-local hostInLobby = false
-
-while not hostInLobby do
-    for key, value in pairs(playerService:GetPlayers()) do
-        if value.Name == masterUsername then
-            hostInLobby = true
-            break
+function joinMasterLobby()
+    joinDungeonRF:InvokeServer(masterUsername)
+end
+function startDungeon()
+    startDungeonRF:FireServer()
+end
+function isAllAcountsIn()
+    for i, v in pairs(alts) do
+        if(game.Players:FindFirstChild(v) == nil) then
+            return false
         end
     end
-    wait(5)
+    return true
+end
+local function Input(input, gameProcessedEvent)
+    if (input.KeyCode == Enum.KeyCode.P) then
+        startDungeon()
+    end
 end
 
-joinMasterLobby()
 
-function createLobby()
-    createLobbyRF:InvokeServer(dungeonName, difficulty, 0, true, private, false);
+-- Run Code
+
+loadGame:FireServer(true)
+
+wait(3)
+if (isMaster) then
+    createLobby()
+    UserInputService.InputBegan:Connect(Input)
+    if(autoStart) then
+        while not isAllAcountsIn() do
+            wait(0.5)
+        end
+        wait(1)
+        startDungeon()
+    end
+else
+    local hostInLobby = false
+
+    while not hostInLobby do
+        if game.Players:FindFirstChild(masterUsername) == nil then
+            hostInLobby = false
+        else
+            hostInLobby = true
+        end
+        wait(1)
+    end
+    joinMasterLobby()
 end
-
-function joinMasterLobby()
-    joinLobbyRF:InvokeServer(masterUsername)
-end
-
