@@ -4,15 +4,15 @@ end
 wait(2)
 -- settings
 local alts = {
-    "AntohaAlt1",
-    "AntohaAlt2",
-    "AntohaAlt3",
-    "AntohaAlt4",
-    "AntohaAlt5"
+    "Alt1",
+    "Alt2",
+    "Alt3",
+    "Alt4",
+    "Alt5"
 }
-local masterUsername = "Anto_Crasher666"
-local dungeonName = "Orbital Outpost"
-local difficulty = "Nightmare"
+local masterUsername = "MainAccount"
+local dungeonName = "DungeonName"
+local difficulty = "Insane/Nightmare"
 local autoStart = true
 -- services and stuff
 local playerService = game:GetService("Players")
